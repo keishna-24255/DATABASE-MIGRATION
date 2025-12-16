@@ -1,0 +1,47 @@
+import mysql.connector
+import psycopg2
+
+try:
+    mysql_conn = mysql.connector.connect(
+        host="localhost",
+        user="root",
+        password="password",
+        database="school"
+    )
+    mysql_cursor = mysql_conn.cursor()
+
+    mysql_cursor.execute("SELECT * FROM students")
+    records = mysql_cursor.fetchall()
+    pg_conn = psycopg2.connect(
+        host="localhost",
+        user="postgres",
+        password="password",
+        database="school_db"
+    )
+    pg_cursor = pg_conn.cursor()
+    pg_cursor.execute("""
+        CREATE TABLE IF NOT EXISTS students (
+            id INTEGER PRIMARY KEY,
+            name VARCHAR(50),
+            age INTEGER
+        )
+    """)
+    for row in records:
+        pg_cursor.execute(
+            "INSERT INTO students (id, name, age) VALUES (%s, %s, %s)",
+            row
+        )
+
+    pg_conn.commit()
+    print("✅ DATABASE MIGRATION SUCCESSFUL")
+    print("📦 Records Migrated:")
+    pg_cursor.execute("SELECT * FROM students")
+    for data in pg_cursor.fetchall():
+        print(data)
+except Exception as e:
+    print("❌ Error:", e)
+finally:
+    mysql_cursor.close()
+    mysql_conn.close()
+    pg_cursor.close()
+    pg_conn.close()

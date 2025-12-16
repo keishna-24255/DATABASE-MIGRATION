@@ -29,3 +29,4 @@ It ensures data integrity while transferring records between databases.
 
 
 #output
+<img width="428" height="118" alt="Image" src="https://github.com/user-attachments/assets/5bc13125-c6c0-4009-a97b-56cd716e80b9" />
